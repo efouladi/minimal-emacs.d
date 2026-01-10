@@ -337,3 +337,7 @@
   (which-key-add-column-padding 1)
   (which-key-max-description-length 40))
 
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
+
