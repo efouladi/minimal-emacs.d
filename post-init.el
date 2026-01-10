@@ -37,6 +37,9 @@
   ;; the mode `compile-angel-on-load-mode' was activated.
   (compile-angel-on-load-mode 1))
 
+(mapc #'disable-theme custom-enabled-themes)  ; Disable all active themes
+(load-theme 'modus-operandi t)  ; Load the built-in theme
+
 ;; Auto-revert in Emacs is a feature that automatically updates the
 ;; contents of a buffer to reflect changes made to the underlying file
 ;; on disk.
