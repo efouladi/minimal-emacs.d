@@ -388,3 +388,67 @@
 (use-package cider
   :ensure t)
 
+;; `vterm' is an Emacs terminal emulator that provides a fully interactive shell
+;; experience within Emacs, supporting features such as color, cursor movement,
+;; and advanced terminal capabilities. Unlike standard Emacs terminal modes,
+;; `vterm' utilizes the libvterm C library for high-performance emulation. This
+;; ensures accurate terminal behavior when running shell programs, text-based
+;; applications, and REPLs.
+(use-package vterm
+  :demand t
+  :vc (:url "https://github.com/akermu/emacs-libvterm" :rev "54c29d14bca05bdd8ae60cda01715d727831e3f9")
+  :if (bound-and-true-p module-file-suffix)
+  :commands (vterm
+             vterm-send-string
+             vterm-send-return
+             vterm-send-key
+             vterm-module-compile)
+
+  :preface
+  (when noninteractive
+    ;; vterm unnecessarily triggers compilation of vterm-module.so upon loading.
+    ;; This prevents that during byte-compilation (`use-package' eagerly loads
+    ;; packages when compiling).
+    (advice-add #'vterm-module-compile :override #'ignore))
+
+  (defun my-vterm--setup ()
+    ;; Hide the mode-line
+    (setq mode-line-format nil)
+
+    ;; Inhibit early horizontal scrolling
+    (setq-local hscroll-margin 0)
+
+    ;; Suppress prompts for terminating active processes when closing vterm
+    (setq-local confirm-kill-processes nil)
+    (add-to-list 'vterm-tramp-shells '("sudo" "/bin/bash")))
+
+  :init
+  (add-hook 'vterm-mode-hook #'my-vterm--setup)
+
+  (setq vterm-timer-delay 0.05)  ; Faster vterm
+  (setq vterm-kill-buffer-on-exit t)
+  (setq vterm-max-scrollback 5000)
+  (setq vterm-shell "/bin/bash"))
+
+(use-package vterm-toggle
+  :vc (:url "https://github.com/jixiuf/vterm-toggle"
+            :rev "80989c6ca35416a5c85fa76277ef49a13c3eac11")
+  :commands (vterm-toggle
+             vterm-toggle-cd)
+  :init
+  (setq vterm-toggle-fullscreen-p nil)
+  (add-to-list 'display-buffer-alist
+             '((lambda (buffer-or-name _)
+                   (let ((buffer (get-buffer buffer-or-name)))
+                     (with-current-buffer buffer
+                       (or (equal major-mode 'vterm-mode)
+                           (string-prefix-p vterm-buffer-name (buffer-name buffer))))))
+                (display-buffer-reuse-window display-buffer-at-bottom)
+                ;;(display-buffer-reuse-window display-buffer-in-direction)
+                ;;display-buffer-in-direction/direction/dedicated is added in emacs27
+                ;;(direction . bottom)
+                ;;(dedicated . t) ;dedicated is supported in emacs27
+                (reusable-frames . visible)
+                (window-height . 0.3)))
+  :bind (("C-c t" . vterm-toggle-cd)))
+
