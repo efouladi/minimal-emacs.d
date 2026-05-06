@@ -452,3 +452,4 @@
                 (window-height . 0.3)))
   :bind (("C-c t" . vterm-toggle-cd)))
 
+(global-display-line-numbers-mode 1)
