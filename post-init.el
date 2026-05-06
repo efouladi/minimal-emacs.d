@@ -50,6 +50,10 @@
 ;; Automaically close paried punctuation
 (electric-pair-mode 1)
 
+(use-package devil
+  :vc (:url "https://github.com/susam/devil.git" :rev "0.6.0")
+  :demand t
+  :config (global-devil-mode))
 
 ;; Auto-revert in Emacs is a feature that automatically updates the
 ;; contents of a buffer to reflect changes made to the underlying file
