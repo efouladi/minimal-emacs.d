@@ -6,15 +6,21 @@
 ;;
 ;; Ensure adding the following compile-angel code at the very beginning
 ;; of your `~/.emacs.d/post-init.el` file, before all other packages.
-(use-package compile-angel
-  :demand t
-  :ensure t
-  :custom
-  ;; Set `compile-angel-verbose` to nil to suppress output from compile-angel.
-  ;; Drawback: The minibuffer will not display compile-angel's actions.
-  (compile-angel-verbose t)
+;; Ensure Emacs loads the most recent byte-compiled files.
+(setq load-prefer-newer t)
 
+(use-package compile-angel
+  :vc (:url "https://github.com/jamescherti/compile-angel.el" :rev "520e516fb794336ddaef4a4e7b02e3e9d60eda04")
+  :demand t
   :config
+  ;; The following disables compilation of packages during installation;
+  ;; compile-angel will handle it.
+  (setq package-native-compile nil)
+
+  ;; Set `compile-angel-verbose' to nil to disable compile-angel messages.
+  ;; (When set to nil, compile-angel won't show which file is being compiled.)
+  (setq compile-angel-verbose t)
+
   ;; The following directive prevents compile-angel from compiling your init
   ;; files. If you choose to remove this push to `compile-angel-excluded-files'
   ;; and compile your pre/post-init files, ensure you understand the
