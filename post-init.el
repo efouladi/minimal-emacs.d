@@ -47,6 +47,9 @@
 ;; (mapc #'disable-theme custom-enabled-themes)  ; Disable all active themes
 ;; (load-theme 'modus-operandi t)  ; Load the built-in theme
 
+;; Automaically close paried punctuation
+(electric-pair-mode 1)
+
 
 ;; Auto-revert in Emacs is a feature that automatically updates the
 ;; contents of a buffer to reflect changes made to the underlying file
